@@ -1,0 +1,51 @@
+import React from "react";
+import DashboardLayout from "../Layouts/Dashboard";
+import ErrorPage from "../Pages/ErrorPage";
+import Accueil from "../Pages/Dashboard/Accueil";
+import Matos from "../Pages/Dashboard/Matos";
+import Finance from "../Pages/Dashboard/Finance";
+import Membres from "../Pages/Dashboard/Membres";
+import Calendrier from "../Pages/Dashboard/Calendrier";
+import Catalogue from "../Pages/Dashboard/Catalogue";
+import Cles from "../Pages/Dashboard/Cles";
+import Covoiturage from "../Pages/Dashboard/Covoiturage";
+
+export default {
+  path: "dashboard",
+  element: <DashboardLayout />,
+  errorElement: <ErrorPage />,
+  children: [
+    {
+      path: "/dashboard",
+      element: <Accueil />,
+    },
+    {
+      path: "matos",
+      element: <Matos />,
+    },
+    {
+      path: "finance",
+      element: <Finance />,
+    },
+    {
+      path: "membres",
+      element: <Membres />,
+    },
+    {
+      path: "calendrier",
+      element: <Calendrier />,
+    },
+    {
+      path: "catalogue",
+      element: <Catalogue />,
+    },
+    {
+      path: "cles",
+      element: <Cles />,
+    },
+    {
+      path: "covoiturage",
+      element: <Covoiturage />,
+    },
+  ],
+};
