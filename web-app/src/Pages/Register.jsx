@@ -93,10 +93,11 @@ export default function Register() {
       setCreateLoading(false);
       navigate("/dashboard");
     } catch (error) {
+      console.log(error);
       openNotification(
         "error",
         "Erreur lors de la création du compte",
-        error.response.data.msg ?? error.response.data.title ?? error.message ?? "Erreur inconnue"
+        error.response?.data?.msg ?? error.response?.data?.title ?? error.message ?? "Erreur inconnue"
       );
       setCreateLoading(false);
     }

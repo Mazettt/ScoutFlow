@@ -52,6 +52,7 @@ export default function Login() {
       } else {
         desc = error.response?.data?.msg ?? error.response?.data?.title ?? error.response?.data?.message ?? error.message ?? "Erreur inconnue";
       }
+      console.log(error);
       openNotification(
         "error",
         "Erreur lors de la connection",
