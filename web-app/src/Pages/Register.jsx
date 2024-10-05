@@ -10,6 +10,7 @@ import {
   Space,
   Spin,
   Typography,
+  Cascader,
 } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
@@ -97,7 +98,10 @@ export default function Register() {
       openNotification(
         "error",
         "Erreur lors de la création du compte",
-        error.response?.data?.msg ?? error.response?.data?.title ?? error.message ?? "Erreur inconnue"
+        error.response?.data?.msg ??
+          error.response?.data?.title ??
+          error.message ??
+          "Erreur inconnue"
       );
       setCreateLoading(false);
     }
@@ -110,7 +114,106 @@ export default function Register() {
       </Select>
     </Form.Item>
   );
-
+  const unites = [
+    {
+      value: "farfa",
+      label: "Farfadets",
+    },
+    {
+      value: "lj",
+      label: "Louveteaux/Jeannettes",
+      children: [
+        {
+          value: "LJ3",
+          label: "LJ3",
+        },
+        {
+          value: "LJ7",
+          label: "LJ7",
+        },
+      ],
+    },
+    {
+      value: "bleus",
+      label: "Scouts/guides",
+      children: [
+        {
+          value: "SG3",
+          label: "SG3",
+        },
+        {
+          value: "SG7",
+          label: "SG7",
+        },
+      ],
+    },
+    {
+      value: "pios",
+      label: "Pionniers/Caravelles",
+    },
+  ];
+  const compa = [
+    {
+      value: "compa'd'tente",
+      label: "Compa'd'tente",
+    },
+    {
+      value: "incomparables",
+      label: "Les incomparables",
+    },
+  ];
+  const options = [
+    {
+      value: "violet",
+      label: "Violet",
+      children: [
+        {
+          value: "rg",
+          label: "RG",
+        },
+        {
+          value: "resp",
+          label: "Responsable",
+          children: [
+            {
+              value: "matos",
+              label: "Matériel",
+            },
+            {
+              value: "cleo",
+              label: "Cléophas",
+            },
+          ],
+        },
+        {
+          value: "secretaire",
+          label: "Secrétaire",
+        },
+        {
+          value: "comptable",
+          label: "Comptable",
+        },
+        {
+          value: "acoco",
+          label: "Acoco",
+          children: compa,
+        },
+      ],
+    },
+    {
+      value: "chef",
+      label: "Chef/Cheftaine",
+      children: unites,
+    },
+    {
+      value: "compa",
+      label: "Compagnon",
+      children: compa,
+    },
+  ];
+  const onChange = (value) => {
+    console.log(value);
+  };
   return (
     <Flex vertical align='center' justify='center' gap={50} style={{ height: "100vh" }}>
       <Space direction='vertical' align='center' size={0}>
@@ -236,7 +339,23 @@ export default function Register() {
             >
               <Input addonBefore={prefixSelector} style={{ width: "100%" }} />
             </Form.Item>
-
+            <Form.Item
+              label='Fonction'
+              rules={[
+                {
+                  required: true,
+                  message: "Veuillez sélectionner votre fonction.",
+                },
+              ]}
+            >
+              <Cascader
+                style={{ width: "100%" }}
+                options={options}
+                onChange={onChange}
+                multiple
+                maxTagCount='responsive'
+              />
+            </Form.Item>
             <Form.Item
               name='agreement'
               valuePropName='checked'
@@ -245,7 +364,8 @@ export default function Register() {
                   validator: (_, value) =>
                     value
                       ? Promise.resolve()
-                      : Promise.reject(new Error("Vous devez accepter les conditions d'utilisation.")),
+                      : Promise.reject(
+                        new Error("Vous devez accepter les conditions d'utilisation.")),
                 },
               ]}
               {...tailFormItemLayout}
