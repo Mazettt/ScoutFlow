@@ -9,6 +9,10 @@ import Calendrier from "../Pages/Dashboard/Calendrier";
 import Catalogue from "../Pages/Dashboard/Catalogue";
 import Cles from "../Pages/Dashboard/Cles";
 import Covoiturage from "../Pages/Dashboard/Covoiturage";
+import Profil from "../Pages/Dashboard/Profil";
+import Parametres from "../Pages/Dashboard/Parametres";
+
+
 
 export default {
   path: "dashboard",
@@ -46,6 +50,14 @@ export default {
     {
       path: "covoiturage",
       element: <Covoiturage />,
+    },
+    {
+      path: "profil",
+      element: <Profil />,
+    },
+    {
+      path: "parametres",
+      element: <Parametres />,
     },
   ],
 };
