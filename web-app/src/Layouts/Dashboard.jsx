@@ -8,11 +8,11 @@ import {
   CalendarOutlined,
   UnorderedListOutlined,
   KeyOutlined,
-  CarFilled,
   CodepenOutlined,
   UserOutlined,
   SettingOutlined,
   LogoutOutlined,
+  CloudOutlined,
 } from "@ant-design/icons";
 import { Button, Dropdown, Flex, Image, Layout, Menu, Spin, theme, Typography } from "antd";
 import logo from "../Assets/sgdf_logo_white.png";
@@ -56,9 +56,9 @@ const items = [
     label: <Link to={"/dashboard/cles"}>Clés</Link>,
   },
   {
-    key: "covoiturage",
-    icon: React.createElement(CarFilled),
-    label: <Link to={"/dashboard/covoiturage"}>Covoiturage</Link>,
+    key: "drive",
+    icon: React.createElement(CloudOutlined),
+    label: <Link to={"/dashboard/drive"}>Drive</Link>,
   },
 ];
 
