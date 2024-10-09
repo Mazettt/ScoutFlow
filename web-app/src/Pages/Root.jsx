@@ -4,10 +4,13 @@ import { Link } from "react-router-dom";
 
 export default function Root() {
   return (
-    <Space direction="vertical">
-      <div>Home</div>
-      <Link to='/login'>Login</Link>
-      <Link to='/register'>Register</Link>
-    </Space>
+    <>
+      <div>
+        <Space direction='horizontal'>
+          <Link to='/login'>Se connecter</Link>
+          <Link to='/register'>Créer un compte</Link>
+        </Space>
+      </div>
+    </>
   );
 }

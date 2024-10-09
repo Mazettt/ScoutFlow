@@ -13,11 +13,13 @@ import {
   SettingOutlined,
   LogoutOutlined,
   CloudOutlined,
+  BgColorsOutlined,
 } from "@ant-design/icons";
 import { Button, Dropdown, Flex, Image, Layout, Menu, Spin, theme, Typography } from "antd";
 import logo from "../Assets/sgdf_logo_white.png";
 import { useAPI } from "../Contexts/API";
 import { CurrentUserProvider } from "../Contexts/CurrentUser";
+import { BgVar } from "../App";
 
 const items = [
   {
@@ -124,6 +126,7 @@ export default function DashboardLayout() {
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
           style={{
+            paddingTop:'10px',
             overflow: "auto",
             height: "100vh",
             position: "fixed",
@@ -158,7 +161,7 @@ export default function DashboardLayout() {
             }}
           >
             <Flex align='center'>
-              <Typography.Title level={3} style={{ margin: 0 }}>
+              <Typography.Title level={3} style={{margin: 0}}>
                 {items.find((item) => item.key === currentMenuItem)?.label.props.children}
               </Typography.Title>
             </Flex>

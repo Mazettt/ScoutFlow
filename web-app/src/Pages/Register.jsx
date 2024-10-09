@@ -340,6 +340,7 @@ export default function Register() {
               <Input addonBefore={prefixSelector} style={{ width: "100%" }} />
             </Form.Item>
             <Form.Item
+              name='fonction'
               label='Fonction'
               rules={[
                 {
