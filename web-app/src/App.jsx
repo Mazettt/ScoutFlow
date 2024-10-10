@@ -34,20 +34,18 @@ export default function App() {
           colorTextSecondary: "#ffffff",
         },
         components: {
-          Calendar:{
-            itemActiveBg: newShade(BgVar, +150),
-          },
           Menu: {
             darkItemHoverBg: newShade(BgVar, -30),
             darkItemSelectedBg: newShade(BgVar, -40),
             darkItemBg: BgVar,
+            darkItemColor: '#e8e8e8'
           },
           Layout: {
             siderBg: BgVar,
             triggerBg: newShade(BgVar, -40),
           },
           Typography: {
-            colorTextSecondary: "#ffffff",
+            colorTextSecondary: "#ebebeb",
           },
         },
       }}

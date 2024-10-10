@@ -126,7 +126,7 @@ export default function DashboardLayout() {
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
           style={{
-            paddingTop:'10px',
+            paddingTop:10,
             overflow: "auto",
             height: "100vh",
             position: "fixed",
