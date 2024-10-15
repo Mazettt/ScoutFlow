@@ -50,11 +50,11 @@ public class AuthController(ILogger<AuthController> logger, UserService service)
     [HttpPost("register", Name = "Register")]
     [ProducesResponseType<UserResponse>(StatusCodes.Status201Created)]
     [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Post(UserRequest userReq)
+    public async Task<IActionResult> Post(RegisterRequest userReq)
     {
         try
         {
-            UserRecord createdUser = await _service.CreateUser(userReq.ToUser());
+            UserRecord createdUser = await _service.CreateUser(userReq.ToUser(), userReq.Roles, userReq.Units);
             return CreatedAtRoute("GetUserById", new { uid = createdUser.Uid }, new UserResponse(createdUser));
         }
         catch (FirebaseAuthException e)

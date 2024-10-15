@@ -18,6 +18,8 @@ public partial class ScoutFlowContext : DbContext
 
     public virtual DbSet<Local> Locals { get; set; }
 
+    public virtual DbSet<PendingUser> PendingUsers { get; set; }
+
     public virtual DbSet<PrismaMigration> PrismaMigrations { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
@@ -83,14 +85,14 @@ public partial class ScoutFlowContext : DbContext
                 .HasMaxLength(1024)
                 .HasColumnName("address");
             entity.Property(e => e.City)
-                .HasMaxLength(100)
+                .HasMaxLength(256)
                 .HasColumnName("city");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp(6) without time zone")
                 .HasColumnName("created_at");
             entity.Property(e => e.KeyrespUserid)
-                .HasMaxLength(100)
+                .HasMaxLength(256)
                 .HasColumnName("keyresp_userid");
             entity.Property(e => e.Name)
                 .HasMaxLength(256)
@@ -98,14 +100,64 @@ public partial class ScoutFlowContext : DbContext
             entity.Property(e => e.Postalcode)
                 .HasMaxLength(10)
                 .HasColumnName("postalcode");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("updated_at");
 
             entity.HasOne(d => d.KeyrespUser).WithMany(p => p.Locals)
                 .HasForeignKey(d => d.KeyrespUserid)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("local_keyresp_userid_fkey");
+        });
+
+        modelBuilder.Entity<PendingUser>(entity =>
+        {
+            entity.HasKey(e => e.FirebaseId).HasName("pending_user_pkey");
+
+            entity.ToTable("pending_user");
+
+            entity.Property(e => e.FirebaseId)
+                .HasMaxLength(256)
+                .HasColumnName("firebase_id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp(6) without time zone")
+                .HasColumnName("created_at");
+
+            entity.HasMany(d => d.Roles).WithMany(p => p.PendingUsers)
+                .UsingEntity<Dictionary<string, object>>(
+                    "PendingUserOnrole",
+                    r => r.HasOne<Role>().WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("pending_userONrole_role_id_fkey"),
+                    l => l.HasOne<PendingUser>().WithMany()
+                        .HasForeignKey("PendingUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("pending_userONrole_pending_user_id_fkey"),
+                    j =>
+                    {
+                        j.HasKey("PendingUserId", "RoleId").HasName("pending_userONrole_pkey");
+                        j.ToTable("pending_userONrole");
+                        j.IndexerProperty<string>("PendingUserId").HasColumnName("pending_user_id");
+                        j.IndexerProperty<int>("RoleId").HasColumnName("role_id");
+                    });
+
+            entity.HasMany(d => d.Units).WithMany(p => p.PendingUsers)
+                .UsingEntity<Dictionary<string, object>>(
+                    "PendingUserOnunit",
+                    r => r.HasOne<Unit>().WithMany()
+                        .HasForeignKey("UnitId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("pending_userONunit_unit_id_fkey"),
+                    l => l.HasOne<PendingUser>().WithMany()
+                        .HasForeignKey("PendingUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("pending_userONunit_pending_user_id_fkey"),
+                    j =>
+                    {
+                        j.HasKey("PendingUserId", "UnitId").HasName("pending_userONunit_pkey");
+                        j.ToTable("pending_userONunit");
+                        j.IndexerProperty<string>("PendingUserId").HasColumnName("pending_user_id");
+                        j.IndexerProperty<int>("UnitId").HasColumnName("unit_id");
+                    });
         });
 
         modelBuilder.Entity<PrismaMigration>(entity =>
@@ -144,7 +196,7 @@ public partial class ScoutFlowContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Name)
-                .HasMaxLength(50)
+                .HasMaxLength(256)
                 .HasColumnName("name");
         });
 
@@ -160,7 +212,7 @@ public partial class ScoutFlowContext : DbContext
                 .HasColumnType("timestamp(6) without time zone")
                 .HasColumnName("created_at");
             entity.Property(e => e.Name)
-                .HasMaxLength(100)
+                .HasMaxLength(256)
                 .HasColumnName("name");
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("timestamp(6) without time zone")
@@ -182,9 +234,6 @@ public partial class ScoutFlowContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(256)
                 .HasColumnName("name");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("updated_at");
 
             entity.HasOne(d => d.Local).WithMany(p => p.Units)
                 .HasForeignKey(d => d.LocalId)
@@ -199,7 +248,7 @@ public partial class ScoutFlowContext : DbContext
             entity.ToTable("user_metadata");
 
             entity.Property(e => e.FirebaseId)
-                .HasMaxLength(100)
+                .HasMaxLength(256)
                 .HasColumnName("firebase_id");
 
             entity.HasMany(d => d.Events).WithMany(p => p.Chefs)

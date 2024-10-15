@@ -60,6 +60,15 @@
     },
     {
       "name": "public.user_metadataONunit"
+    },
+    {
+      "name": "public.pending_user"
+    },
+    {
+      "name": "public.pending_userONrole"
+    },
+    {
+      "name": "public.pending_userONunit"
     }
   ],
   "type-mappings": {
