@@ -79,7 +79,7 @@ export default function Register() {
   const onFinish = async (values) => {
     try {
       setCreateLoading(true);
-      await api.post("/user", {
+      await api.post("/auth/register", {
         firstname: values.firstname,
         lastname: values.lastname,
         email: values.email,

@@ -39,20 +39,39 @@ public class AuthController(ILogger<AuthController> logger, UserService service)
     [ProducesResponseType<ErrorResponse>(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Profile()
     {
-        var sessionCookie = Request.Cookies["session"];
-        if (string.IsNullOrEmpty(sessionCookie))
+        if (HttpContext.Items["firebaseToken"] is not FirebaseToken decodedToken)
         {
-            return Unauthorized(new ErrorResponse("Session invalide", "Aucun cookie de session"));
+            throw new Exception("firebaseToken not found");
         }
+        UserRecord user = await FirebaseAuth.DefaultInstance.GetUserAsync(decodedToken.Uid);
+        return Ok(user);
+    }
+
+    [HttpPost("register", Name = "Register")]
+    [ProducesResponseType<UserResponse>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Post(UserRequest userReq)
+    {
         try
         {
-            var decodedToken = await FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(sessionCookie, true);
-            UserRecord user = await FirebaseAuth.DefaultInstance.GetUserAsync(decodedToken.Uid);
-            return Ok(user);
+            UserRecord createdUser = await _service.CreateUser(userReq.ToUser());
+            return CreatedAtRoute("GetUserById", new { uid = createdUser.Uid }, new UserResponse(createdUser));
         }
-        catch (FirebaseAuthException)
+        catch (FirebaseAuthException e)
         {
-            return Unauthorized(new ErrorResponse("Session invalide", "Cookie de session invalide"));
+            if (e.AuthErrorCode == AuthErrorCode.EmailAlreadyExists)
+            {
+                return BadRequest(new ErrorResponse("L'adresse email est déjà utilisée, veuillez en choisir une autre"));
+            }
+            if (e.AuthErrorCode == AuthErrorCode.PhoneNumberAlreadyExists)
+            {
+                return BadRequest(new ErrorResponse("Le numéro de téléphone est déjà utilisé, veuillez en choisir un autre"));
+            }
+            return BadRequest(new ErrorResponse("Impossible de créer l'utilisateur", $"{e.AuthErrorCode}: {e.Message}"));
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(new ErrorResponse("Arguments invalides", e.Message));
         }
     }
 
