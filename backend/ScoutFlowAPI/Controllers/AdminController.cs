@@ -26,6 +26,28 @@ namespace ScoutFlowAPI.Controllers
             try
             {
                 await service.AcceptPendingUser(uid);
+                //TODO: send email to user
+                return Ok();
+            }
+            catch (FirebaseAuthException e)
+            {
+                if (e.AuthErrorCode == AuthErrorCode.UserNotFound)
+                {
+                    return NotFound(new ErrorResponse("L'utilisateur n'existe pas"));
+                }
+                return BadRequest(new ErrorResponse("Impossible de récupérer l'utilisateur", $"{e.AuthErrorCode}: {e.Message}"));
+            }
+        }
+
+        [HttpDelete("pending-users/{uid}/reject", Name = "RejectPendingUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Reject(string uid)
+        {
+            try
+            {
+                await service.DeletePendingUser(uid);
+                //TODO: send email to user
                 return Ok();
             }
             catch (FirebaseAuthException e)

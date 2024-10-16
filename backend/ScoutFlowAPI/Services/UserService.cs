@@ -92,7 +92,7 @@ public class UserService(ScoutFlowContext context)
         return await FirebaseAuth.DefaultInstance.UpdateUserAsync(user);
     }
 
-    public async Task DeleteUser(string uid)
+    public async Task DisableUser(string uid)
     {
         await FirebaseAuth.DefaultInstance.UpdateUserAsync(new UserRecordArgs { Uid = uid, Disabled = true });
     }
@@ -121,5 +121,15 @@ public class UserService(ScoutFlowContext context)
             claims.Add(unit.Name, true);
         }
         await FirebaseAuth.DefaultInstance.SetCustomUserClaimsAsync(fu.Uid, claims);
+    }
+
+    public async Task DeletePendingUser(string uid)
+    {
+        await FirebaseAuth.DefaultInstance.DeleteUserAsync(uid);
+        UserMetadatum u = await _context.UserMetadata.Include(u => u.Roles).Include(u => u.Units).SingleAsync(u => u.FirebaseId == uid);
+        u.Roles.Clear();
+        u.Units.Clear();
+        _context.UserMetadata.Remove(u);
+        await _context.SaveChangesAsync();
     }
 }
