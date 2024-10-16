@@ -35,11 +35,11 @@ model role {
   name      String      @unique @db.VarChar(256)
 
   users              user_metadataONrole[]
-  pending_userONrole pending_userONrole[]
 }
 
 model user_metadata {
   firebase_id   String    @id @db.VarChar(256)
+  verified      Boolean   @default(false)
 
   keyresp_local local[]
   roles         user_metadataONrole[]
@@ -56,7 +56,6 @@ model unit {
   local      local     @relation(fields: [local_id], references: [id])
   chefs      user_metadataONunit[]
   events     event[]
-  pending_userONunit pending_userONunit[]
 
   created_at DateTime @default(now()) @db.Timestamp(6)
 }
@@ -93,14 +92,6 @@ model event {
   updated_at DateTime @updatedAt @db.Timestamp(6)
 }
 
-model pending_user {
-  firebase_id   String    @id @db.VarChar(256)
-  roles      pending_userONrole[]
-  pending_userONunit pending_userONunit[]
-
-  created_at DateTime @default(now()) @db.Timestamp(6)
-}
-
 
 
 model user_metadataONrole {
@@ -128,22 +119,4 @@ model user_metadataONevent {
   event   event @relation(fields: [event_id], references: [id])
 
   @@id([chef_id, event_id])
-}
-
-model pending_userONrole {
-  pending_user_id String
-  pending_user        pending_user @relation(fields: [pending_user_id], references: [firebase_id])
-  role_id             Int
-  role                role @relation(fields: [role_id], references: [id])
-
-  @@id([pending_user_id, role_id])
-}
-
-model pending_userONunit {
-  pending_user_id String
-  pending_user        pending_user @relation(fields: [pending_user_id], references: [firebase_id])
-  unit_id             Int
-  unit                unit @relation(fields: [unit_id], references: [id])
-
-  @@id([pending_user_id, unit_id])
 }

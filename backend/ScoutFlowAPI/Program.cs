@@ -75,8 +75,17 @@ app.Use(async (context, next) =>
     }
 });
 
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api") || context.Request.Path.StartsWithSegments("/auth/profile"), appBuilder => {
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/auth/profile"), appBuilder => {
     appBuilder.UseMiddleware<Auth>();
+});
+
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder => {
+    appBuilder.UseMiddleware<Auth>();
+    appBuilder.UseMiddleware<VerifiedUser>();
+});
+
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/admin"), appBuilder => {
+    appBuilder.UseMiddleware<Admin>();
 });
 
 app.Run();

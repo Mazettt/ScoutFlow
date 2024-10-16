@@ -9,6 +9,8 @@ public partial class UserMetadatum
 {
     public string FirebaseId { get; set; } = null!;
 
+    public bool Verified { get; set; }
+
     public virtual ICollection<Local> Locals { get; set; } = new List<Local>();
 
     public virtual ICollection<Event> Events { get; set; } = new List<Event>();
