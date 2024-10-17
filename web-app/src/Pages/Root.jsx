@@ -3,51 +3,32 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Background from "../Assets/Background_test.jpg";
 import { ArrowDownOutlined } from '@ant-design/icons';
+import '../Style/Root.css';
 const { Title, Paragraph} = Typography;
 
 
 export default function Root() {
-  const contentStyle = {
-    margin: 0,
-    height: '100vh',
-    color: '#fff',
-    lineHeight: '160px',
-    textAlign: 'center',
-    background:'blue'
-  };
   const onChange = (currentSlide) => {
     console.log(currentSlide);
   };
-  const LinkStyle = {
-    fontSize:"1.5vw", 
-    color:"white",
-    margin:"1vw", 
-    border:"solid #dfdfdf", 
-    borderRadius:"15px", 
-    padding:"15px",
-  };
+
   return (
     <>
-      <div >
-        <Flex justify="center" align="center" style={{width: "100vw", height:"100vh", overflow: "hidden",  zIndex: -1}}>
-          <Image style={{ minHeight:"100vh", width: "auto", display:"inline"}} src= {Background} preview={false}/>
-          <div style={{width: "100vw", height:"100vh", background:"#000000b3", position:"absolute", top:0}}/>
+      <div>
+        <Flex id="BackgroundImgCont" justify="center" align="center">
+          <Image id="BackgroundImg" src= {Background} preview={false}/>
+          <div id="BackgroundImgFilter"/>
         </Flex>
-        <Space  direction="vertical" style={{position: "absolute", top:0, left: 0, marginLeft:"5vw"}}>
-          <ConfigProvider
-            theme={{
-              token:{
-                colorText:"#ffffff",
-              },
-            }}>
-            <Typography >
+        <Space id="TitContainer" direction="vertical">
+          <ConfigProvider theme={{token:{colorText:"#ffffff",},}}>
+            <Typography>
               <Title style={{fontSize: "7vw"}}>Bienvenue</Title>
               <Paragraph style={{fontSize: "2vw"}}>Sur l'intranet du groupe SGDF Salvador Serena</Paragraph>
             </Typography>
           </ConfigProvider>
           <Space direction='horizontal'>
-            <Link to='/login' style={LinkStyle}>Se connecter</Link>
-            <Link to='/register' style={LinkStyle}>Créer un compte</Link>
+            <Link to='/login' className="LinkTit">Se connecter</Link>
+            <Link to='/register' className="LinkTit" >Créer un compte</Link>
           </Space>
         </Space>
       </div>
@@ -56,20 +37,38 @@ export default function Root() {
           <Button ghost size="large" icon={<ArrowDownOutlined/>} style={{position:"absolute", bottom:"50px"}}/>
         </a>
       </Flex>
-      <Carousel afterChange={onChange} arrows id="carousel">
+      <Carousel afterChange={onChange} arrows autoplay autoplaySpeed={5000} id="carousel">
         <div>
-          <h3 style={contentStyle}>1</h3>
+          <Flex justify="center" style={{position:"absolute", bottom:"50px", left:"50px",}}>
+            <a href="#next">
+              <Button ghost size="large" icon={<ArrowDownOutlined/>}/>
+            </a>
+          </Flex>
+          <h3 className="contentStyle" style={{backgroundColor:"#003A5D"}}>Le groupe</h3>
         </div>
         <div>
-          <h3 style={contentStyle}>2</h3>
+          <h3 className="contentStyle" style={{backgroundColor:"#622599"}}>Les violets</h3>
         </div>
         <div>
-          <h3 style={contentStyle}>3</h3>
+          <h3 className="contentStyle" style={{backgroundColor:"#61BD98"}}>Les farfadets</h3>
         </div>
         <div>
-          <h3 style={contentStyle}>4</h3>
+          <h3 className="contentStyle" style={{backgroundColor:"#EE7F00"}}>Les louveteaux-Jeannettes</h3>
+        </div>
+        <div>
+          <h3 className="contentStyle" style={{backgroundColor:"#0069B2"}}>Les Scouts et Guides</h3>
+        </div>
+        <div>
+          <h3 className="contentStyle" style={{backgroundColor:"#C22E16"}}>Les Pionniers/Caravelles</h3>
+        </div>
+        <div>
+          <h3 className="contentStyle" style={{backgroundColor:"#006D3E"}}>Les Compagnons</h3>
+        </div>
+        <div>
+          <h3 className="contentStyle" style={{backgroundColor:"#6D73A7"}}>Les Audacieux</h3>
         </div>
       </Carousel>
+      <section id="next" style={{height:"100vh"}}></section>
     </>
   );
 }
