@@ -6,7 +6,7 @@ using ScoutFlowAPI.Services;
 namespace ScoutFlowAPI.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class UserController(ILogger<UserController> logger, UserService service) : ControllerBase
 {
     private readonly ILogger<UserController> _logger = logger;
@@ -36,34 +36,6 @@ public class UserController(ILogger<UserController> logger, UserService service)
                 return NotFound(new ErrorResponse("L'utilisateur n'existe pas"));
             }
             return BadRequest(new ErrorResponse("Impossible de récupérer l'utilisateur", $"{e.AuthErrorCode}: {e.Message}"));
-        }
-    }
-
-    [HttpPost(Name = "CreateUser")]
-    [ProducesResponseType<UserResponse>(StatusCodes.Status201Created)]
-    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Post(UserRequest userReq)
-    {
-        try
-        {
-            UserRecord createdUser = await _service.CreateUser(userReq.ToUser());
-            return CreatedAtRoute("GetUserById", new { uid = createdUser.Uid }, new UserResponse(createdUser));
-        }
-        catch (FirebaseAuthException e)
-        {
-            if (e.AuthErrorCode == AuthErrorCode.EmailAlreadyExists)
-            {
-                return BadRequest(new ErrorResponse("L'adresse email est déjà utilisée, veuillez en choisir une autre"));
-            }
-            if (e.AuthErrorCode == AuthErrorCode.PhoneNumberAlreadyExists)
-            {
-                return BadRequest(new ErrorResponse("Le numéro de téléphone est déjà utilisé, veuillez en choisir un autre"));
-            }
-            return BadRequest(new ErrorResponse("Impossible de créer l'utilisateur", $"{e.AuthErrorCode}: {e.Message}"));
-        }
-        catch (ArgumentException e)
-        {
-            return BadRequest(new ErrorResponse("Arguments invalides", e.Message));
         }
     }
 

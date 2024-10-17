@@ -2,6 +2,7 @@ using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.EntityFrameworkCore;
 using ScoutFlowAPI.Data;
+using ScoutFlowAPI.Middlewares;
 using ScoutFlowAPI.Models;
 using ScoutFlowAPI.Services;
 
@@ -72,6 +73,10 @@ app.Use(async (context, next) =>
         context.Response.StatusCode = 500;
         await context.Response.WriteAsJsonAsync(new ErrorResponse("Une erreur est survenue", ex.Message));
     }
+});
+
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api") || context.Request.Path.StartsWithSegments("/auth/profile"), appBuilder => {
+    appBuilder.UseMiddleware<Auth>();
 });
 
 app.Run();
