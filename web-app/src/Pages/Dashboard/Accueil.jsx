@@ -9,7 +9,7 @@ export default function Accueil() {
   return (
     <>
       <Typography.Title level={3}>Hello, {currentUser.displayName}</Typography.Title>
-      <RoleAccess anyOf={["admin"]}>
+      <RoleAccess anyOf={["Admin"]}>
         <Typography.Text>Only admin content</Typography.Text>
       </RoleAccess>
     </>

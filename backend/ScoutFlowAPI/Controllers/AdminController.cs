@@ -26,6 +26,7 @@ namespace ScoutFlowAPI.Controllers
             try
             {
                 await service.AcceptPendingUser(uid);
+                await FirebaseAuth.DefaultInstance.RevokeRefreshTokensAsync(uid);
                 //TODO: send email to user
                 return Ok();
             }
@@ -47,6 +48,7 @@ namespace ScoutFlowAPI.Controllers
             try
             {
                 await service.DeletePendingUser(uid);
+                await FirebaseAuth.DefaultInstance.RevokeRefreshTokensAsync(uid);
                 //TODO: send email to user
                 return Ok();
             }
