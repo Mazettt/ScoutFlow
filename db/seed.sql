@@ -1,3 +1,5 @@
+INSERT INTO public.user_metadata (firebase_id) VALUES ('5vEdjBlcQLTAznlZLeNLJpu5DAT2');
+
 INSERT INTO public.role (name)
 VALUES
 	('Admin'),
@@ -23,3 +25,7 @@ VALUES
 	('Farfa', 'Farfadet', 1),
 	('Compa''d''tente', 'Compagnon', 1),
 	('Incomparables', 'Compagnon', 1);
+
+INSERT INTO public."user_metadataONrole"(
+	user_id, role_id)
+	VALUES ('5vEdjBlcQLTAznlZLeNLJpu5DAT2', 1);
