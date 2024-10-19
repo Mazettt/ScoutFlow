@@ -83,14 +83,14 @@ public partial class ScoutFlowContext : DbContext
                 .HasMaxLength(1024)
                 .HasColumnName("address");
             entity.Property(e => e.City)
-                .HasMaxLength(100)
+                .HasMaxLength(256)
                 .HasColumnName("city");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp(6) without time zone")
                 .HasColumnName("created_at");
             entity.Property(e => e.KeyrespUserid)
-                .HasMaxLength(100)
+                .HasMaxLength(256)
                 .HasColumnName("keyresp_userid");
             entity.Property(e => e.Name)
                 .HasMaxLength(256)
@@ -98,9 +98,6 @@ public partial class ScoutFlowContext : DbContext
             entity.Property(e => e.Postalcode)
                 .HasMaxLength(10)
                 .HasColumnName("postalcode");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("updated_at");
 
             entity.HasOne(d => d.KeyrespUser).WithMany(p => p.Locals)
                 .HasForeignKey(d => d.KeyrespUserid)
@@ -144,7 +141,7 @@ public partial class ScoutFlowContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Name)
-                .HasMaxLength(50)
+                .HasMaxLength(256)
                 .HasColumnName("name");
         });
 
@@ -160,7 +157,7 @@ public partial class ScoutFlowContext : DbContext
                 .HasColumnType("timestamp(6) without time zone")
                 .HasColumnName("created_at");
             entity.Property(e => e.Name)
-                .HasMaxLength(100)
+                .HasMaxLength(256)
                 .HasColumnName("name");
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("timestamp(6) without time zone")
@@ -182,9 +179,6 @@ public partial class ScoutFlowContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(256)
                 .HasColumnName("name");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("updated_at");
 
             entity.HasOne(d => d.Local).WithMany(p => p.Units)
                 .HasForeignKey(d => d.LocalId)
@@ -199,8 +193,11 @@ public partial class ScoutFlowContext : DbContext
             entity.ToTable("user_metadata");
 
             entity.Property(e => e.FirebaseId)
-                .HasMaxLength(100)
+                .HasMaxLength(256)
                 .HasColumnName("firebase_id");
+            entity.Property(e => e.Verified)
+                .HasDefaultValue(false)
+                .HasColumnName("verified");
 
             entity.HasMany(d => d.Events).WithMany(p => p.Chefs)
                 .UsingEntity<Dictionary<string, object>>(

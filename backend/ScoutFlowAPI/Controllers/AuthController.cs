@@ -8,11 +8,8 @@ namespace ScoutFlowAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class AuthController(ILogger<AuthController> logger, UserService service) : ControllerBase
+public class AuthController(ILogger<UserController> logger, UserService service) : ControllerBase
 {
-    private readonly ILogger<AuthController> _logger = logger;
-    private readonly UserService _service = service;
-
     // [HttpPost("register", Name = "Register")]
     // [ProducesResponseType<UserResponse>(StatusCodes.Status200OK)]
     // [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
@@ -20,7 +17,7 @@ public class AuthController(ILogger<AuthController> logger, UserService service)
     // {
     //     try
     //     {
-    //         UserRecord createdUser = await _service.CreateUser(registerReq.ToUser());
+    //         UserRecord createdUser = await service.CreateUser(registerReq.ToUser());
     //         string customToken = await FirebaseAuth.DefaultInstance.CreateCustomTokenAsync(createdUser.Uid);
     //         return Ok(new RegisterResponse(customToken));
     //     }
@@ -50,11 +47,11 @@ public class AuthController(ILogger<AuthController> logger, UserService service)
     [HttpPost("register", Name = "Register")]
     [ProducesResponseType<UserResponse>(StatusCodes.Status201Created)]
     [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Post(UserRequest userReq)
+    public async Task<IActionResult> Post(RegisterRequest userReq)
     {
         try
         {
-            UserRecord createdUser = await _service.CreateUser(userReq.ToUser());
+            UserRecord createdUser = await service.CreateUser(userReq.ToUser(), userReq.Roles, userReq.Units);
             return CreatedAtRoute("GetUserById", new { uid = createdUser.Uid }, new UserResponse(createdUser));
         }
         catch (FirebaseAuthException e)
@@ -86,8 +83,8 @@ public class AuthController(ILogger<AuthController> logger, UserService service)
         };
         try
         {
-            var sessionCookie = await FirebaseAuth.DefaultInstance.CreateSessionCookieAsync(loginReq.IdToken, options);
-            var cookieOptions = new CookieOptions()
+            string sessionCookie = await FirebaseAuth.DefaultInstance.CreateSessionCookieAsync(loginReq.IdToken, options);
+            CookieOptions cookieOptions = new()
             {
                 Expires = DateTimeOffset.UtcNow.Add(options.ExpiresIn),
                 HttpOnly = true,
@@ -95,6 +92,7 @@ public class AuthController(ILogger<AuthController> logger, UserService service)
                 SameSite = SameSiteMode.None,
             };
             Response.Cookies.Append("session", sessionCookie, cookieOptions);
+            logger.LogInformation("User logged in");
             return Ok();
         }
         catch (FirebaseAuthException)
@@ -115,10 +113,10 @@ public class AuthController(ILogger<AuthController> logger, UserService service)
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> LogoutAll()
     {
-        var sessionCookie = Request.Cookies["session"];
+        string? sessionCookie = Request.Cookies["session"];
         try
         {
-            var decodedToken = await FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(sessionCookie);
+            FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(sessionCookie);
             await FirebaseAuth.DefaultInstance.RevokeRefreshTokensAsync(decodedToken.Uid);
             Response.Cookies.Delete("session");
             return Ok();

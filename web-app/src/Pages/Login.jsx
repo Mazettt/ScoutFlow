@@ -102,7 +102,7 @@ export default function Login() {
                 },
               ]}
             >
-              <Input prefix={<LockOutlined />} type='password' placeholder='Mot de passe' />
+              <Input.Password prefix={<LockOutlined />} placeholder='Mot de passe' />
             </Form.Item>
             <Form.Item>
               <Button block type='primary' loading={loginLoading} htmlType='submit'>

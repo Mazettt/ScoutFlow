@@ -21,8 +21,6 @@ public partial class Local
 
     public DateTime CreatedAt { get; set; }
 
-    public DateTime UpdatedAt { get; set; }
-
     public virtual ICollection<Event> Events { get; set; } = new List<Event>();
 
     public virtual UserMetadatum KeyrespUser { get; set; } = null!;

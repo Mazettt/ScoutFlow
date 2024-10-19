@@ -34,11 +34,12 @@ model role {
   id        Int         @id @default(autoincrement())
   name      String      @unique @db.VarChar(256)
 
-  users user_metadataONrole[]
+  users              user_metadataONrole[]
 }
 
 model user_metadata {
   firebase_id   String    @id @db.VarChar(256)
+  verified      Boolean   @default(false)
 
   keyresp_local local[]
   roles         user_metadataONrole[]
@@ -90,6 +91,7 @@ model event {
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @updatedAt @db.Timestamp(6)
 }
+
 
 
 model user_metadataONrole {

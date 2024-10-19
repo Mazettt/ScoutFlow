@@ -77,6 +77,29 @@ export default function Register() {
   }, []);
 
   const onFinish = async (values) => {
+    let roles = [];
+    let units = [];
+
+    values.fonction.forEach((f) => {
+      console.log(f);
+      if (f[0] == "Violet") {
+        roles.push(f[1]);
+        if (f[1] == "Accoco") {
+          units.push(f[2]);
+        }
+      } else if (f[0] == "Chef") {
+        roles.push(f[0]);
+        units.push(f[f.length - 1]);
+      } else if (f[0] == "Compa") {
+        roles.push(f[0]);
+        units.push(f[1]);
+      }
+    });
+
+    // Remove duplicates
+    roles = [...new Set(roles)];
+    units = [...new Set(units)];
+
     try {
       setCreateLoading(true);
       await api.post("/auth/register", {
@@ -85,6 +108,8 @@ export default function Register() {
         email: values.email,
         phoneNumber: "+" + values.phonePrefix + values.phone,
         password: values.password,
+        roles,
+        units,
       });
       const user = await signInWithEmailAndPassword(auth, values.email, values.password);
       const idToken = await user.user.getIdToken();
@@ -116,11 +141,11 @@ export default function Register() {
   );
   const unites = [
     {
-      value: "farfa",
+      value: "Farfa",
       label: "Farfadets",
     },
     {
-      value: "lj",
+      value: "LJ",
       label: "Louveteaux/Jeannettes",
       children: [
         {
@@ -134,8 +159,8 @@ export default function Register() {
       ],
     },
     {
-      value: "bleus",
-      label: "Scouts/guides",
+      value: "SG",
+      label: "Scouts/Guides",
       children: [
         {
           value: "SG3",
@@ -148,72 +173,64 @@ export default function Register() {
       ],
     },
     {
-      value: "pios",
+      value: "PK",
       label: "Pionniers/Caravelles",
     },
   ];
   const compa = [
     {
-      value: "compa'd'tente",
+      value: "Compa'd'tente",
       label: "Compa'd'tente",
     },
     {
-      value: "incomparables",
+      value: "Incomparables",
       label: "Les incomparables",
     },
   ];
   const options = [
     {
-      value: "violet",
+      value: "Violet",
       label: "Violet",
       children: [
         {
-          value: "rg",
+          value: "RG",
           label: "RG",
         },
         {
-          value: "resp",
-          label: "Responsable",
-          children: [
-            {
-              value: "matos",
-              label: "Matériel",
-            },
-            {
-              value: "cleo",
-              label: "Cléophas",
-            },
-          ],
+          value: "RespMatos",
+          label: "Responsable matériel",
         },
         {
-          value: "secretaire",
-          label: "Secrétaire",
+          value: "RespCleophas",
+          label: "Responsable cléophas",
         },
         {
-          value: "comptable",
-          label: "Comptable",
+          value: "RespCompta",
+          label: "Responsable comptabilité",
         },
         {
-          value: "acoco",
-          label: "Acoco",
+          value: "RespSecretaire",
+          label: "Responsable secrétariat",
+        },
+        {
+          value: "Accoco",
+          label: "Accoco",
           children: compa,
         },
       ],
     },
     {
-      value: "chef",
+      value: "Chef",
       label: "Chef/Cheftaine",
       children: unites,
     },
     {
-      value: "compa",
+      value: "Compa",
       label: "Compagnon",
       children: compa,
     },
   ];
-  const onChange = (value) => {
-    console.log(value);
-  };
+
   return (
     <Flex vertical align='center' justify='center' gap={50} style={{ height: "100vh" }}>
       <Space direction='vertical' align='center' size={0}>
@@ -352,7 +369,7 @@ export default function Register() {
               <Cascader
                 style={{ width: "100%" }}
                 options={options}
-                onChange={onChange}
+                showCheckedStrategy={Cascader.SHOW_CHILD}
                 multiple
                 maxTagCount='responsive'
               />

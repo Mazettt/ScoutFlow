@@ -1,11 +1,10 @@
 using System;
 using FirebaseAdmin.Auth;
-using Microsoft.AspNetCore.Mvc;
 using ScoutFlowAPI.Models;
 
 namespace ScoutFlowAPI.Middlewares;
 
-public class Auth(RequestDelegate next)
+public class Auth(RequestDelegate next /*, IServiceProvider serviceProvider*/)
 {
     private static async Task SendUnauthorizedResponse(HttpContext context)
     {
@@ -15,7 +14,10 @@ public class Auth(RequestDelegate next)
 
     public async Task InvokeAsync(HttpContext context)
     {
-        var sessionCookie = context.Request.Cookies["session"];
+        // using var scope = serviceProvider.CreateScope();
+        // var userService = scope.ServiceProvider.GetRequiredService<UserService>();
+
+        string? sessionCookie = context.Request.Cookies["session"];
         if (string.IsNullOrEmpty(sessionCookie))
         {
             await SendUnauthorizedResponse(context);
@@ -23,7 +25,7 @@ public class Auth(RequestDelegate next)
         }
         try
         {
-            var decodedToken = await FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(sessionCookie, true);
+            FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(sessionCookie, true);
             context.Items["firebaseToken"] = decodedToken;
         }
         catch (FirebaseAuthException)

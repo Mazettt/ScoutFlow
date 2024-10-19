@@ -15,8 +15,6 @@ public partial class Unit
 
     public DateTime CreatedAt { get; set; }
 
-    public DateTime UpdatedAt { get; set; }
-
     public virtual ICollection<Event> Events { get; set; } = new List<Event>();
 
     public virtual Local Local { get; set; } = null!;

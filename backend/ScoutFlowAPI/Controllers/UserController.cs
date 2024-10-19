@@ -7,16 +7,13 @@ namespace ScoutFlowAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController(ILogger<UserController> logger, UserService service) : ControllerBase
+public class UserController(UserService service) : ControllerBase
 {
-    private readonly ILogger<UserController> _logger = logger;
-    private readonly UserService _service = service;
-
     [HttpGet(Name = "GetUsers")]
     [ProducesResponseType<IEnumerable<UserResponse>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> Get()
     {
-        return Ok((await _service.GetUsers()).Select(u => new UserResponse(u)));
+        return Ok((await service.GetUsers()).Select(u => new UserResponse(u)));
     }
 
     [HttpGet("{uid}", Name = "GetUserById")]
@@ -26,7 +23,7 @@ public class UserController(ILogger<UserController> logger, UserService service)
     {
         try
         {
-            UserRecord foundUser = await _service.GetUserById(uid);
+            User foundUser = await service.GetUserById(uid);
             return Ok(new UserResponse(foundUser));
         }
         catch (FirebaseAuthException e)
@@ -49,7 +46,7 @@ public class UserController(ILogger<UserController> logger, UserService service)
         user.Uid = uid;
         try
         {
-            UserRecord updatedUser = await _service.UpdateUser(user);
+            UserRecord updatedUser = await service.UpdateUser(user);
             return Ok(new UserResponse(updatedUser));
         }
         catch (FirebaseAuthException e)
