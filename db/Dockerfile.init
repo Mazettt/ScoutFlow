@@ -1,0 +1,9 @@
+FROM node:22-alpine
+
+WORKDIR /initdb
+
+COPY . .
+
+RUN npm install
+
+CMD npx prisma migrate deploy
