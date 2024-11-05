@@ -19,5 +19,5 @@ public partial class Unit
 
     public virtual Local Local { get; set; } = null!;
 
-    public virtual ICollection<UserMetadatum> Chefs { get; set; } = new List<UserMetadatum>();
+    public virtual ICollection<Userdatum> Chefs { get; set; } = new List<Userdatum>();
 }

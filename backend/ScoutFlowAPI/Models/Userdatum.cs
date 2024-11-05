@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace ScoutFlowAPI.Models;
 
-public partial class UserMetadatum
+public partial class Userdatum
 {
     public string FirebaseId { get; set; } = null!;
 

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# load .env file
+set -a && source .env && set +a
+
 npx prisma migrate dev
 
 if [ $? -ne 0 ]; then
@@ -8,7 +11,7 @@ if [ $? -ne 0 ]; then
 fi
 
 cd ../backend/ScoutFlowAPI/
-efcpt "Host=localhost;Port=5432;Database=ScoutFlow;Username=martin;Password="
+efcpt $EFCPT_CONNECTION_STRING
 
 if [ $? -ne 0 ]; then
     echo "Failed to apply changes"

@@ -18,7 +18,7 @@ public class UserService(ScoutFlowContext context)
         {
             firebaseUsers.Add(enumerator.Current);
         }
-        var userMetadatas = await _context.UserMetadata
+        var userdatas = await _context.Userdata
             .Where(u => u.Verified == verifed)
             .Include(u => u.Roles)
             .Include(u => u.Units)
@@ -26,7 +26,7 @@ public class UserService(ScoutFlowContext context)
             .Include(u => u.Events)
             .ToListAsync();
 
-        return userMetadatas.Select(u =>
+        return userdatas.Select(u =>
             {
                 UserRecord fu = firebaseUsers.Single(x => x.Uid == u.FirebaseId);
                 return new User(fu, u);
@@ -41,7 +41,7 @@ public class UserService(ScoutFlowContext context)
     public async Task<User> GetUserById(string uid)
     {
         UserRecord fu = await FirebaseAuth.DefaultInstance.GetUserAsync(uid);
-        UserMetadatum u = await _context.UserMetadata
+        Userdatum u = await _context.Userdata
             .Include(u => u.Roles)
             .Include(u => u.Units)
             .Include(u => u.Locals)
@@ -52,7 +52,7 @@ public class UserService(ScoutFlowContext context)
 
     public async Task<UserRecord> CreateUser(UserRecordArgs user, List<string> roles, List<string> units)
     {
-        UserMetadatum newUser = new();
+        Userdatum newUser = new();
         foreach (string role in roles)
         {
             try
@@ -81,7 +81,7 @@ public class UserService(ScoutFlowContext context)
         await FirebaseAuth.DefaultInstance.SetCustomUserClaimsAsync(ret.Uid, new Dictionary<string, object> { { "Verified", false } });
         newUser.FirebaseId = ret.Uid;
         newUser.Verified = false;
-        await _context.UserMetadata.AddAsync(newUser);
+        await _context.Userdata.AddAsync(newUser);
         await _context.SaveChangesAsync();
 
         return ret;
@@ -99,15 +99,15 @@ public class UserService(ScoutFlowContext context)
 
     public async Task<bool> IsUserPending(string uid)
     {
-        return await _context.UserMetadata.AnyAsync(u => u.FirebaseId == uid && u.Verified == false);
+        return await _context.Userdata.AnyAsync(u => u.FirebaseId == uid && u.Verified == false);
     }
 
     public async Task AcceptPendingUser(string uid)
     {
         UserRecord fu = await FirebaseAuth.DefaultInstance.GetUserAsync(uid);
-        UserMetadatum u = await _context.UserMetadata.Include(u => u.Roles).Include(u => u.Units).SingleAsync(u => u.FirebaseId == uid);
+        Userdatum u = await _context.Userdata.Include(u => u.Roles).Include(u => u.Units).SingleAsync(u => u.FirebaseId == uid);
         u.Verified = true;
-        _context.UserMetadata.Update(u);
+        _context.Userdata.Update(u);
         await _context.SaveChangesAsync();
 
         Dictionary<string, object> claims = [];
@@ -126,10 +126,10 @@ public class UserService(ScoutFlowContext context)
     public async Task DeletePendingUser(string uid)
     {
         await FirebaseAuth.DefaultInstance.DeleteUserAsync(uid);
-        UserMetadatum u = await _context.UserMetadata.Include(u => u.Roles).Include(u => u.Units).SingleAsync(u => u.FirebaseId == uid);
+        Userdatum u = await _context.Userdata.Include(u => u.Roles).Include(u => u.Units).SingleAsync(u => u.FirebaseId == uid);
         u.Roles.Clear();
         u.Units.Clear();
-        _context.UserMetadata.Remove(u);
+        _context.Userdata.Remove(u);
         await _context.SaveChangesAsync();
     }
 }

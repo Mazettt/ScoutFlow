@@ -29,5 +29,5 @@ public partial class Event
 
     public virtual Unit Unit { get; set; } = null!;
 
-    public virtual ICollection<UserMetadatum> Chefs { get; set; } = new List<UserMetadatum>();
+    public virtual ICollection<Userdatum> Chefs { get; set; } = new List<Userdatum>();
 }

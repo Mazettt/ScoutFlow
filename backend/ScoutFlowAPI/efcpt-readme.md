@@ -26,7 +26,7 @@ Add these NuGet packages to your .csproj based on your selections:
     ```json
     {
         "ConnectionStrings": {
-            "DefaultConnection": "host=localhost;port=5432;database=ScoutFlow"
+            "DefaultConnection": "host=mazettt.fr;port=5432;database=ScoutFlow"
         }
     }
     ```

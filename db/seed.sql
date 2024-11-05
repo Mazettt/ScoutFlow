@@ -1,4 +1,4 @@
-INSERT INTO public.user_metadata (firebase_id) VALUES ('5vEdjBlcQLTAznlZLeNLJpu5DAT2');
+INSERT INTO public.userdata (firebase_id) VALUES ('5vEdjBlcQLTAznlZLeNLJpu5DAT2');
 
 INSERT INTO public.role (name)
 VALUES
@@ -26,6 +26,6 @@ VALUES
 	('Compa''d''tente', 'Compagnon', 1),
 	('Incomparables', 'Compagnon', 1);
 
-INSERT INTO public."user_metadataONrole"(
+INSERT INTO public."userdataONrole"(
 	user_id, role_id)
 	VALUES ('5vEdjBlcQLTAznlZLeNLJpu5DAT2', 1);

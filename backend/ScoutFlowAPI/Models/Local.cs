@@ -23,7 +23,7 @@ public partial class Local
 
     public virtual ICollection<Event> Events { get; set; } = new List<Event>();
 
-    public virtual UserMetadatum KeyrespUser { get; set; } = null!;
+    public virtual Userdatum KeyrespUser { get; set; } = null!;
 
     public virtual ICollection<Unit> Units { get; set; } = new List<Unit>();
 }

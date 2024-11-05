@@ -47,19 +47,19 @@
       "name": "public.unit"
     },
     {
-      "name": "public.user_metadata"
-    },
-    {
       "name": "public.role"
     },
     {
-      "name": "public.user_metadataONevent"
+      "name": "public.userdata"
     },
     {
-      "name": "public.user_metadataONrole"
+      "name": "public.userdataONevent"
     },
     {
-      "name": "public.user_metadataONunit"
+      "name": "public.userdataONrole"
+    },
+    {
+      "name": "public.userdataONunit"
     }
   ],
   "type-mappings": {

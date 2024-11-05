@@ -4,4 +4,4 @@
 # -x Print commands before they are executed
 set -ex
 
-cat seed.sql | psql ScoutFlow
+cat seed.sql | psql ScoutFlow -h mazettt.fr -U ScoutFlow

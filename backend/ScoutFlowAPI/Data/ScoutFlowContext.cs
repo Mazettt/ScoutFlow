@@ -26,7 +26,7 @@ public partial class ScoutFlowContext : DbContext
 
     public virtual DbSet<Unit> Units { get; set; }
 
-    public virtual DbSet<UserMetadatum> UserMetadata { get; set; }
+    public virtual DbSet<Userdatum> Userdata { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -186,11 +186,11 @@ public partial class ScoutFlowContext : DbContext
                 .HasConstraintName("unit_local_id_fkey");
         });
 
-        modelBuilder.Entity<UserMetadatum>(entity =>
+        modelBuilder.Entity<Userdatum>(entity =>
         {
-            entity.HasKey(e => e.FirebaseId).HasName("user_metadata_pkey");
+            entity.HasKey(e => e.FirebaseId).HasName("userdata_pkey");
 
-            entity.ToTable("user_metadata");
+            entity.ToTable("userdata");
 
             entity.Property(e => e.FirebaseId)
                 .HasMaxLength(256)
@@ -201,57 +201,57 @@ public partial class ScoutFlowContext : DbContext
 
             entity.HasMany(d => d.Events).WithMany(p => p.Chefs)
                 .UsingEntity<Dictionary<string, object>>(
-                    "UserMetadataOnevent",
+                    "UserdataOnevent",
                     r => r.HasOne<Event>().WithMany()
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("user_metadataONevent_event_id_fkey"),
-                    l => l.HasOne<UserMetadatum>().WithMany()
+                        .HasConstraintName("userdataONevent_event_id_fkey"),
+                    l => l.HasOne<Userdatum>().WithMany()
                         .HasForeignKey("ChefId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("user_metadataONevent_chef_id_fkey"),
+                        .HasConstraintName("userdataONevent_chef_id_fkey"),
                     j =>
                     {
-                        j.HasKey("ChefId", "EventId").HasName("user_metadataONevent_pkey");
-                        j.ToTable("user_metadataONevent");
+                        j.HasKey("ChefId", "EventId").HasName("userdataONevent_pkey");
+                        j.ToTable("userdataONevent");
                         j.IndexerProperty<string>("ChefId").HasColumnName("chef_id");
                         j.IndexerProperty<int>("EventId").HasColumnName("event_id");
                     });
 
             entity.HasMany(d => d.Roles).WithMany(p => p.Users)
                 .UsingEntity<Dictionary<string, object>>(
-                    "UserMetadataOnrole",
+                    "UserdataOnrole",
                     r => r.HasOne<Role>().WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("user_metadataONrole_role_id_fkey"),
-                    l => l.HasOne<UserMetadatum>().WithMany()
+                        .HasConstraintName("userdataONrole_role_id_fkey"),
+                    l => l.HasOne<Userdatum>().WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("user_metadataONrole_user_id_fkey"),
+                        .HasConstraintName("userdataONrole_user_id_fkey"),
                     j =>
                     {
-                        j.HasKey("UserId", "RoleId").HasName("user_metadataONrole_pkey");
-                        j.ToTable("user_metadataONrole");
+                        j.HasKey("UserId", "RoleId").HasName("userdataONrole_pkey");
+                        j.ToTable("userdataONrole");
                         j.IndexerProperty<string>("UserId").HasColumnName("user_id");
                         j.IndexerProperty<int>("RoleId").HasColumnName("role_id");
                     });
 
             entity.HasMany(d => d.Units).WithMany(p => p.Chefs)
                 .UsingEntity<Dictionary<string, object>>(
-                    "UserMetadataOnunit",
+                    "UserdataOnunit",
                     r => r.HasOne<Unit>().WithMany()
                         .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("user_metadataONunit_unit_id_fkey"),
-                    l => l.HasOne<UserMetadatum>().WithMany()
+                        .HasConstraintName("userdataONunit_unit_id_fkey"),
+                    l => l.HasOne<Userdatum>().WithMany()
                         .HasForeignKey("ChefId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("user_metadataONunit_chef_id_fkey"),
+                        .HasConstraintName("userdataONunit_chef_id_fkey"),
                     j =>
                     {
-                        j.HasKey("ChefId", "UnitId").HasName("user_metadataONunit_pkey");
-                        j.ToTable("user_metadataONunit");
+                        j.HasKey("ChefId", "UnitId").HasName("userdataONunit_pkey");
+                        j.ToTable("userdataONunit");
                         j.IndexerProperty<string>("ChefId").HasColumnName("chef_id");
                         j.IndexerProperty<int>("UnitId").HasColumnName("unit_id");
                     });

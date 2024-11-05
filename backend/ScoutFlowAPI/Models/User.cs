@@ -3,7 +3,7 @@ using FirebaseAdmin.Auth;
 
 namespace ScoutFlowAPI.Models;
 
-public class User(UserRecord firebaseUser, UserMetadatum userMetadata)
+public class User(UserRecord firebaseUser, Userdatum userdata)
 {
     public string Uid { get; } = firebaseUser.Uid;
     public string DisplayName { get; } = firebaseUser.DisplayName;
@@ -16,9 +16,9 @@ public class User(UserRecord firebaseUser, UserMetadatum userMetadata)
     public UserMetadata UserMetaData { get; } = firebaseUser.UserMetaData;
     public IReadOnlyDictionary<string, object> CustomClaims { get; } = firebaseUser.CustomClaims;
 
-    public bool Verified { get; set; } = userMetadata.Verified;
-    public virtual ICollection<Role> Roles { get; set; } = userMetadata.Roles;
-    public virtual ICollection<Unit> Units { get; set; } = userMetadata.Units;
-    public virtual ICollection<Event> Events { get; set; } = userMetadata.Events;
-    public virtual ICollection<Local> Locals { get; set; } = userMetadata.Locals;
+    public bool Verified { get; set; } = userdata.Verified;
+    public virtual ICollection<Role> Roles { get; set; } = userdata.Roles;
+    public virtual ICollection<Unit> Units { get; set; } = userdata.Units;
+    public virtual ICollection<Event> Events { get; set; } = userdata.Events;
+    public virtual ICollection<Local> Locals { get; set; } = userdata.Locals;
 }
