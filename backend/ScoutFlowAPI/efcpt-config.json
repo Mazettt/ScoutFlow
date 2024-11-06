@@ -36,6 +36,30 @@
     },
     {
       "name": "public._prisma_migrations"
+    },
+    {
+      "name": "public.event"
+    },
+    {
+      "name": "public.local"
+    },
+    {
+      "name": "public.unit"
+    },
+    {
+      "name": "public.role"
+    },
+    {
+      "name": "public.userdata"
+    },
+    {
+      "name": "public.userdataONevent"
+    },
+    {
+      "name": "public.userdataONrole"
+    },
+    {
+      "name": "public.userdataONunit"
     }
   ],
   "type-mappings": {

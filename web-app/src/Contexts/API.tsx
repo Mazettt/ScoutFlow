@@ -2,7 +2,7 @@ import * as React from "react";
 import axios, { AxiosInstance } from "axios";
 
 const api = axios.create({
-  baseURL: process.env.NODE_ENV === "development" ? "https://localhost:7264" : process.env.REACT_APP_API_BASEURL,
+  baseURL: process.env.NODE_ENV === "development" ? "https://localhost:7264" : process.env.REACT_APP_API_PUBLIC_BASEURL,
   withCredentials: true,
 });
 

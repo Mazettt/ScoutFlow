@@ -8,7 +8,12 @@ import Membres from "../Pages/Dashboard/Membres";
 import Calendrier from "../Pages/Dashboard/Calendrier";
 import Catalogue from "../Pages/Dashboard/Catalogue";
 import Cles from "../Pages/Dashboard/Cles";
-import Covoiturage from "../Pages/Dashboard/Covoiturage";
+import Profil from "../Pages/Dashboard/Profil";
+import Parametres from "../Pages/Dashboard/Parametres";
+import Drive from "../Pages/Dashboard/Drive";
+
+
+
 
 export default {
   path: "dashboard",
@@ -44,8 +49,16 @@ export default {
       element: <Cles />,
     },
     {
-      path: "covoiturage",
-      element: <Covoiturage />,
+      path: "profil",
+      element: <Profil />,
+    },
+    {
+      path: "parametres",
+      element: <Parametres />,
+    },
+    {
+      path: "drive",
+      element: <Drive />,
     },
   ],
 };

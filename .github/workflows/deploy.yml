@@ -1,0 +1,111 @@
+name: Deploy backend
+
+on:
+  push:
+    tags:
+      - 'v*'
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: SSH Remote Commands
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.DEPLOY_SERVER }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ secrets.DEPLOY_PORT }}
+          script: cd ScoutFlow/ && git switch main && git pull && docker compose down && docker compose up --build -d
+
+# name: Deploy backend
+
+# on:
+#   push:
+#     tags:
+#       - 'v*'
+#     branches:
+#       - testCI
+
+# env:
+#   BACKEND_DOCKER_REPO: "${{ vars.DOCKER_HUB_USERNAME }}/scoutflow-backend"
+#   WEBAPP_DOCKER_REPO: "${{ vars.DOCKER_HUB_USERNAME }}/scoutflow-webapp"
+#   DBINIT_DOCKER_REPO: "${{ vars.DOCKER_HUB_USERNAME }}/scoutflow-dbinit"
+
+# jobs:
+#   backend:
+#     name: Build and deploy backend
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - name: Login to Docker Hub
+#         uses: docker/login-action@v3
+#         with:
+#           username: ${{ vars.DOCKER_HUB_USERNAME }}
+#           password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v3
+
+#       - name: Build backend and push
+#         uses: docker/build-push-action@v6
+#         with:
+#           platforms: linux/amd64,linux/arm64
+#           context: backend/
+#           push: true
+#           tags: ${{ env.BACKEND_DOCKER_REPO }}:latest,${{ env.BACKEND_DOCKER_REPO }}:${{ github.ref_name }}
+
+#   webapp:
+#     name: Build and deploy web app
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - name: Login to Docker Hub
+#         uses: docker/login-action@v3
+#         with:
+#           username: ${{ vars.DOCKER_HUB_USERNAME }}
+#           password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v3
+
+#       - name: Build web app and push
+#         uses: docker/build-push-action@v6
+#         with:
+#           platforms: linux/amd64,linux/arm64
+#           context: web-app/
+#           push: true
+#           build-args: REACT_APP_API_PUBLIC_BASEURL=https://scoutflow.mazettt.fr/api
+#           tags: ${{ env.WEBAPP_DOCKER_REPO }}:latest,${{ env.WEBAPP_DOCKER_REPO }}:${{ github.ref_name }}
+
+#   dbinit:
+#     name: Build and deploy db init
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - name: Login to Docker Hub
+#         uses: docker/login-action@v3
+#         with:
+#           username: ${{ vars.DOCKER_HUB_USERNAME }}
+#           password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v3
+
+#       - name: Build db init and push
+#         uses: docker/build-push-action@v6
+#         with:
+#           platforms: linux/amd64,linux/arm64
+#           context: db/
+#           file: db/Dockerfile.init
+#           sec
+#           push: true
+#           tags: ${{ env.DBINIT_DOCKER_REPO }}:latest,${{ env.DBINIT_DOCKER_REPO }}:${{ github.ref_name }}

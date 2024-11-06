@@ -8,11 +8,8 @@ namespace ScoutFlowAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class AuthController(ILogger<AuthController> logger, UserService service) : ControllerBase
+public class AuthController(ILogger<UserController> logger, UserService service) : ControllerBase
 {
-    private readonly ILogger<AuthController> _logger = logger;
-    private readonly UserService _service = service;
-
     // [HttpPost("register", Name = "Register")]
     // [ProducesResponseType<UserResponse>(StatusCodes.Status200OK)]
     // [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
@@ -20,7 +17,7 @@ public class AuthController(ILogger<AuthController> logger, UserService service)
     // {
     //     try
     //     {
-    //         UserRecord createdUser = await _service.CreateUser(registerReq.ToUser());
+    //         UserRecord createdUser = await service.CreateUser(registerReq.ToUser());
     //         string customToken = await FirebaseAuth.DefaultInstance.CreateCustomTokenAsync(createdUser.Uid);
     //         return Ok(new RegisterResponse(customToken));
     //     }
@@ -39,20 +36,39 @@ public class AuthController(ILogger<AuthController> logger, UserService service)
     [ProducesResponseType<ErrorResponse>(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Profile()
     {
-        var sessionCookie = Request.Cookies["session"];
-        if (string.IsNullOrEmpty(sessionCookie))
+        if (HttpContext.Items["firebaseToken"] is not FirebaseToken decodedToken)
         {
-            return Unauthorized(new ErrorResponse("Session invalide", "Aucun cookie de session"));
+            throw new Exception("firebaseToken not found");
         }
+        UserRecord user = await FirebaseAuth.DefaultInstance.GetUserAsync(decodedToken.Uid);
+        return Ok(user);
+    }
+
+    [HttpPost("register", Name = "Register")]
+    [ProducesResponseType<UserResponse>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Post(RegisterRequest userReq)
+    {
         try
         {
-            var decodedToken = await FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(sessionCookie, true);
-            UserRecord user = await FirebaseAuth.DefaultInstance.GetUserAsync(decodedToken.Uid);
-            return Ok(user);
+            UserRecord createdUser = await service.CreateUser(userReq.ToUser(), userReq.Roles, userReq.Units);
+            return CreatedAtRoute("GetUserById", new { uid = createdUser.Uid }, new UserResponse(createdUser));
         }
-        catch (FirebaseAuthException)
+        catch (FirebaseAuthException e)
         {
-            return Unauthorized(new ErrorResponse("Session invalide", "Cookie de session invalide"));
+            if (e.AuthErrorCode == AuthErrorCode.EmailAlreadyExists)
+            {
+                return BadRequest(new ErrorResponse("L'adresse email est déjà utilisée, veuillez en choisir une autre"));
+            }
+            if (e.AuthErrorCode == AuthErrorCode.PhoneNumberAlreadyExists)
+            {
+                return BadRequest(new ErrorResponse("Le numéro de téléphone est déjà utilisé, veuillez en choisir un autre"));
+            }
+            return BadRequest(new ErrorResponse("Impossible de créer l'utilisateur", $"{e.AuthErrorCode}: {e.Message}"));
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(new ErrorResponse("Arguments invalides", e.Message));
         }
     }
 
@@ -67,8 +83,8 @@ public class AuthController(ILogger<AuthController> logger, UserService service)
         };
         try
         {
-            var sessionCookie = await FirebaseAuth.DefaultInstance.CreateSessionCookieAsync(loginReq.IdToken, options);
-            var cookieOptions = new CookieOptions()
+            string sessionCookie = await FirebaseAuth.DefaultInstance.CreateSessionCookieAsync(loginReq.IdToken, options);
+            CookieOptions cookieOptions = new()
             {
                 Expires = DateTimeOffset.UtcNow.Add(options.ExpiresIn),
                 HttpOnly = true,
@@ -76,6 +92,7 @@ public class AuthController(ILogger<AuthController> logger, UserService service)
                 SameSite = SameSiteMode.None,
             };
             Response.Cookies.Append("session", sessionCookie, cookieOptions);
+            logger.LogInformation("User logged in");
             return Ok();
         }
         catch (FirebaseAuthException)
@@ -96,10 +113,10 @@ public class AuthController(ILogger<AuthController> logger, UserService service)
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> LogoutAll()
     {
-        var sessionCookie = Request.Cookies["session"];
+        string? sessionCookie = Request.Cookies["session"];
         try
         {
-            var decodedToken = await FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(sessionCookie);
+            FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance.VerifySessionCookieAsync(sessionCookie);
             await FirebaseAuth.DefaultInstance.RevokeRefreshTokensAsync(decodedToken.Uid);
             Response.Cookies.Delete("session");
             return Ok();

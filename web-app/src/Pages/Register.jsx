@@ -10,6 +10,7 @@ import {
   Space,
   Spin,
   Typography,
+  Cascader,
 } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
@@ -76,14 +77,39 @@ export default function Register() {
   }, []);
 
   const onFinish = async (values) => {
+    let roles = [];
+    let units = [];
+
+    values.fonction.forEach((f) => {
+      console.log(f);
+      if (f[0] == "Violet") {
+        roles.push(f[1]);
+        if (f[1] == "Accoco") {
+          units.push(f[2]);
+        }
+      } else if (f[0] == "Chef") {
+        roles.push(f[0]);
+        units.push(f[f.length - 1]);
+      } else if (f[0] == "Compa") {
+        roles.push(f[0]);
+        units.push(f[1]);
+      }
+    });
+
+    // Remove duplicates
+    roles = [...new Set(roles)];
+    units = [...new Set(units)];
+
     try {
       setCreateLoading(true);
-      await api.post("/user", {
+      await api.post("/auth/register", {
         firstname: values.firstname,
         lastname: values.lastname,
         email: values.email,
         phoneNumber: "+" + values.phonePrefix + values.phone,
         password: values.password,
+        roles,
+        units,
       });
       const user = await signInWithEmailAndPassword(auth, values.email, values.password);
       const idToken = await user.user.getIdToken();
@@ -93,10 +119,14 @@ export default function Register() {
       setCreateLoading(false);
       navigate("/dashboard");
     } catch (error) {
+      console.log(error);
       openNotification(
         "error",
         "Erreur lors de la création du compte",
-        error.response.data.msg ?? error.response.data.title ?? error.message ?? "Erreur inconnue"
+        error.response?.data?.msg ??
+          error.response?.data?.title ??
+          error.message ??
+          "Erreur inconnue"
       );
       setCreateLoading(false);
     }
@@ -109,6 +139,97 @@ export default function Register() {
       </Select>
     </Form.Item>
   );
+  const unites = [
+    {
+      value: "Farfa",
+      label: "Farfadets",
+    },
+    {
+      value: "LJ",
+      label: "Louveteaux/Jeannettes",
+      children: [
+        {
+          value: "LJ3",
+          label: "LJ3",
+        },
+        {
+          value: "LJ7",
+          label: "LJ7",
+        },
+      ],
+    },
+    {
+      value: "SG",
+      label: "Scouts/Guides",
+      children: [
+        {
+          value: "SG3",
+          label: "SG3",
+        },
+        {
+          value: "SG7",
+          label: "SG7",
+        },
+      ],
+    },
+    {
+      value: "PK",
+      label: "Pionniers/Caravelles",
+    },
+  ];
+  const compa = [
+    {
+      value: "Compa'd'tente",
+      label: "Compa'd'tente",
+    },
+    {
+      value: "Incomparables",
+      label: "Les incomparables",
+    },
+  ];
+  const options = [
+    {
+      value: "Violet",
+      label: "Violet",
+      children: [
+        {
+          value: "RG",
+          label: "RG",
+        },
+        {
+          value: "RespMatos",
+          label: "Responsable matériel",
+        },
+        {
+          value: "RespCleophas",
+          label: "Responsable cléophas",
+        },
+        {
+          value: "RespCompta",
+          label: "Responsable comptabilité",
+        },
+        {
+          value: "RespSecretaire",
+          label: "Responsable secrétariat",
+        },
+        {
+          value: "Accoco",
+          label: "Accoco",
+          children: compa,
+        },
+      ],
+    },
+    {
+      value: "Chef",
+      label: "Chef/Cheftaine",
+      children: unites,
+    },
+    {
+      value: "Compa",
+      label: "Compagnon",
+      children: compa,
+    },
+  ];
 
   return (
     <Flex vertical align='center' justify='center' gap={50} style={{ height: "100vh" }}>
@@ -235,7 +356,24 @@ export default function Register() {
             >
               <Input addonBefore={prefixSelector} style={{ width: "100%" }} />
             </Form.Item>
-
+            <Form.Item
+              name='fonction'
+              label='Fonction'
+              rules={[
+                {
+                  required: true,
+                  message: "Veuillez sélectionner votre fonction.",
+                },
+              ]}
+            >
+              <Cascader
+                style={{ width: "100%" }}
+                options={options}
+                showCheckedStrategy={Cascader.SHOW_CHILD}
+                multiple
+                maxTagCount='responsive'
+              />
+            </Form.Item>
             <Form.Item
               name='agreement'
               valuePropName='checked'
@@ -244,7 +382,8 @@ export default function Register() {
                   validator: (_, value) =>
                     value
                       ? Promise.resolve()
-                      : Promise.reject(new Error("Vous devez accepter les conditions d'utilisation.")),
+                      : Promise.reject(
+                        new Error("Vous devez accepter les conditions d'utilisation.")),
                 },
               ]}
               {...tailFormItemLayout}

@@ -1,0 +1,75 @@
+services:
+  frontend:
+    container_name: scoutflow-frontend
+    build:
+      context: ./web-app
+      args:
+        REACT_APP_API_PUBLIC_BASEURL: https://scoutflow.mazettt.fr/api
+        REACT_APP_FIREBASE_CONFIG: ${FIREBASE_CONFIG}
+    ports:
+      - 7271:80
+    networks:
+      - backend-frontend-network
+    depends_on:
+      backend:
+        condition: service_started
+  backend:
+    container_name: scoutflow-backend
+    build: ./backend
+    ports:
+      - 7272:8080
+    networks:
+      - db-backend-network
+      - backend-frontend-network
+    secrets:
+      - appsettings.json
+    depends_on:
+      db:
+        condition: service_healthy
+      dbinit:
+        condition: service_completed_successfully
+  dbinit:
+    container_name: scoutflow-dbinit
+    build:
+      context: ./db
+      dockerfile: Dockerfile.init
+    networks:
+      - db-backend-network
+    env_file:
+      - ./db/.env.docker
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    container_name: scoutflow-db
+    image: postgres
+    restart: always
+    user: postgres
+    secrets:
+      - db-password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - db-backend-network
+    environment:
+      - POSTGRES_DB=ScoutFlow
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  db-data:
+networks:
+  db-backend-network:
+    driver: bridge
+  backend-frontend-network:
+    driver: bridge
+secrets:
+  db-password:
+    file: db/password.txt
+  appsettings.json:
+    file: backend/ScoutFlowAPI/appsettings.json
