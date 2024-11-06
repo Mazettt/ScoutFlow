@@ -4,7 +4,8 @@ services:
     build:
       context: ./web-app
       args:
-        REACT_APP_API_PUBLIC_BASEURL: http://localhost:7272
+        REACT_APP_API_PUBLIC_BASEURL: https://scoutflow.mazettt.fr/api
+    image: mazettt/scoutflow-webapp
     env_file:
       - ./web-app/.env
     ports:
@@ -17,6 +18,7 @@ services:
   backend:
     container_name: scoutflow-backend
     build: ./backend
+    image: mazettt/scoutflow-backend
     ports:
       - 7272:8080
     networks:
@@ -32,6 +34,7 @@ services:
     build:
       context: ./db
       dockerfile: Dockerfile.init
+    image: mazettt/scoutflow-dbinit
     networks:
       - db-backend-network
     env_file:
