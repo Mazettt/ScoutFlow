@@ -25,6 +25,8 @@ services:
     networks:
       - db-backend-network
       - backend-frontend-network
+    secrets:
+      - appsettings.json
     depends_on:
       db:
         condition: service_healthy
@@ -74,3 +76,5 @@ networks:
 secrets:
   db-password:
     file: db/password.txt
+  appsettings.json:
+    file: backend/ScoutFlowAPI/appsettings.json

@@ -31,12 +31,29 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+if (builder.Environment.IsProduction()) {
+    builder.Configuration.AddJsonFile("/run/secrets/appsettings.json");
+}
+
 builder.Services.AddDbContext<ScoutFlowContext>(
     options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+IConfigurationSection? firebaseSec = builder.Configuration.GetSection("FirebaseConfig") ?? throw new InvalidOperationException("FirebaseConfig not found");
+JsonCredentialParameters firebaseConfig = new()
+{
+    Type = firebaseSec.GetValue<string>("type"),
+    ProjectId = firebaseSec.GetValue<string>("project_id"),
+    PrivateKeyId = firebaseSec.GetValue<string>("private_key_id"),
+    PrivateKey = firebaseSec.GetValue<string>("private_key"),
+    ClientEmail = firebaseSec.GetValue<string>("client_email"),
+    ClientId = firebaseSec.GetValue<string>("client_id"),
+    TokenUri = firebaseSec.GetValue<string>("token_uri"),
+    UniverseDomain = firebaseSec.GetValue<string>("universe_domain"),
+};
+
 FirebaseApp.Create(new AppOptions
 {
-    Credential = GoogleCredential.FromFile(builder.Configuration.GetConnectionString("FirebaseCredentialsPath")),
+    Credential = GoogleCredential.FromJsonParameters(firebaseConfig),
     ProjectId = "scoutflow-9a3c2"
 });
 
