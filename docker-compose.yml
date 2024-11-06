@@ -5,6 +5,7 @@ services:
       context: ./web-app
       args:
         REACT_APP_API_PUBLIC_BASEURL: https://scoutflow.mazettt.fr/api
+        REACT_APP_FIREBASE_CONFIG: ${FIREBASE_CONFIG}
     image: mazettt/scoutflow-webapp
     env_file:
       - ./web-app/.env

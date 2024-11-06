@@ -1,8 +1,7 @@
 import * as React from "react";
 import { FirebaseApp, initializeApp } from "firebase/app";
-import { firebaseConfig } from "../config";
 
-const firebase = initializeApp(firebaseConfig);
+const firebase = initializeApp(JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG));
 
 const Context = React.createContext<FirebaseApp>(firebase);
 
