@@ -6,6 +6,7 @@ services:
       args:
         REACT_APP_API_PUBLIC_BASEURL: https://scoutflow.mazettt.fr/api
         REACT_APP_FIREBASE_CONFIG: ${FIREBASE_CONFIG}
+    restart: always
     ports:
       - 7271:80
     networks:
@@ -16,6 +17,7 @@ services:
   backend:
     container_name: scoutflow-backend
     build: ./backend
+    restart: always
     ports:
       - 7272:8080
     networks:
