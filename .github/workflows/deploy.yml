@@ -2,8 +2,8 @@ name: Deploy backend
 
 on:
   push:
-    tags:
-      - 'v*'
+    # tags:
+    #   - 'v*'
     branches:
       - main
 
@@ -22,6 +22,8 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           port: ${{ secrets.DEPLOY_PORT }}
           script: cd ScoutFlow/ && git switch main && git pull && docker compose down && docker compose up --build -d
+
+
 
 # name: Deploy backend
 
