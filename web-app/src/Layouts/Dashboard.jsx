@@ -13,6 +13,7 @@ import {
   SettingOutlined,
   LogoutOutlined,
   CloudOutlined,
+  UnlockOutlined
 } from "@ant-design/icons";
 import { Button, Dropdown, Flex, Image, Layout, Menu, Spin, theme, Typography } from "antd";
 import logo from "../Assets/sgdf_logo_white.png";
@@ -105,6 +106,11 @@ function VerifiedLayout() {
       key: "drive",
       icon: React.createElement(CloudOutlined),
       label: <Link to={"/dashboard/drive"}>Drive</Link>,
+    },
+    {
+      key: "access",
+      icon: React.createElement(UnlockOutlined),
+      label: <RoleAccess anyOf={["Admin"]}> <Link to={"/dashboard/access"}>Access</Link> </RoleAccess>,
     },
   ];
 

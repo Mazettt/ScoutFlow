@@ -11,7 +11,7 @@ import Cles from "../Pages/Dashboard/Cles";
 import Profil from "../Pages/Dashboard/Profil";
 import Parametres from "../Pages/Dashboard/Parametres";
 import Drive from "../Pages/Dashboard/Drive";
-
+import Access from "../Pages/Dashboard/Access";
 
 
 
@@ -59,6 +59,10 @@ export default {
     {
       path: "drive",
       element: <Drive />,
+    },
+    {
+      path: "access",
+      element: <Access />,
     },
   ],
 };
