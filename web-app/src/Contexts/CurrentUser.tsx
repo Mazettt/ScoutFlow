@@ -9,24 +9,17 @@ type User = {
   providerId: string;
   emailVerified: boolean;
   disabled: boolean;
-  providerData: {
-    uid: string;
-    displayName: string;
-    email: string;
-    phoneNumber: string;
-    photoUrl: string;
-    providerId: string;
-  }[];
-  tokensValidAfterTimestamp: string;
   userMetaData: {
     creationTimestamp: string;
     lastSignInTimestamp: string;
     lastRefreshTimestamp: string;
   };
-  customClaims: {
-    [key: string]: string;
-  };
-  tenantId: string;
+  customClaims: Record<string, string>;
+  verified: boolean;
+  roles: string[];
+  units: string[];
+  events: string[];
+  localsKey: string[];
 }
 
 const Context = React.createContext<User>(null);
