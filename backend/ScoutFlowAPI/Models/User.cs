@@ -20,5 +20,5 @@ public class User(UserRecord firebaseUser, Userdatum userdata)
     public virtual ICollection<Role> Roles { get; set; } = userdata.Roles;
     public virtual ICollection<Unit> Units { get; set; } = userdata.Units;
     public virtual ICollection<Event> Events { get; set; } = userdata.Events;
-    public virtual ICollection<Local> Locals { get; set; } = userdata.Locals;
+    public virtual ICollection<Local> LocalsKey { get; set; } = userdata.Locals;
 }

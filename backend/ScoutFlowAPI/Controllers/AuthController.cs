@@ -32,16 +32,29 @@ public class AuthController(ILogger<UserController> logger, UserService service)
     // }
 
     [HttpGet("profile", Name = "Profile")]
-    [ProducesResponseType<UserRecord>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProfileResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<ErrorResponse>(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Profile()
     {
         if (HttpContext.Items["firebaseToken"] is not FirebaseToken decodedToken)
         {
             throw new Exception("firebaseToken not found");
         }
-        UserRecord user = await FirebaseAuth.DefaultInstance.GetUserAsync(decodedToken.Uid);
-        return Ok(user);
+        try
+        {
+            User foundUser = await service.GetUserById(decodedToken.Uid);
+            return Ok(new ProfileResponse(foundUser));
+        }
+        catch (FirebaseAuthException e)
+        {
+            if (e.AuthErrorCode == AuthErrorCode.UserNotFound)
+            {
+                return NotFound(new ErrorResponse("L'utilisateur n'existe pas"));
+            }
+            return BadRequest(new ErrorResponse("Impossible de récupérer l'utilisateur", $"{e.AuthErrorCode}: {e.Message}"));
+        }
     }
 
     [HttpPost("register", Name = "Register")]

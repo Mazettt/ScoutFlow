@@ -282,7 +282,7 @@ function ProfileMenu({ u }) {
           arrow={{ pointAtCenter: true }}
         >
           <Button type='primary' shape='circle'>
-            {u.displayName[0]}
+            {u.displayName ? u.displayName[0] : "?"}
           </Button>
         </Dropdown>
       </Flex>
