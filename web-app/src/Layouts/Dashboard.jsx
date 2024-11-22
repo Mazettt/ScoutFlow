@@ -110,7 +110,7 @@ function VerifiedLayout() {
     {
       key: "access",
       icon: React.createElement(UnlockOutlined),
-      label: <RoleAccess anyOf={["Admin"]}> <Link to={"/dashboard/access"}>Access</Link> </RoleAccess>,
+      label:<Link to={"/dashboard/access"}>Access</Link>,
     },
   ];
 
