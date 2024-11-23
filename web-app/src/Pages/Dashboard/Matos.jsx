@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, Divider, Flex } from "antd";
+import { Card, Row, Col, Divider, Flex, Typography } from "antd";
 import "../../Style/Matos.css";
 
 export default function Matos() {
@@ -52,45 +52,48 @@ export default function Matos() {
   const onTab3Change = (key) => {
     setActiveTabKey3(key);
   };
+
+  const gridStyle = {
+    width : "25%",
+    textAlign : "left",
+    minWidth : "150px"
+  };
+  const gridStyle2 = {
+    textAlign : "left",
+    minWidth : "150px"
+  };
+
   return (
     <>
-      <Divider>Gros matériel commun</Divider>
-      <Flex horizontal wrap justify='start'>
-        <Card className='card tentes' title='Tentes' bordered={true}>
-          <Card.Grid className='card_grid' style={{ width: "25%" }}>
-            Content
-          </Card.Grid>
-          <Card.Grid className='card_grid' style={{ width: "25%" }}>
-            Content
-          </Card.Grid>
-          <Card.Grid className='card_grid' style={{ width: "25%" }}>
-            Content
-          </Card.Grid>
-          <Card.Grid className='card_grid' style={{ width: "25%" }}>
-            Content
-          </Card.Grid>
-          <Card.Grid className='card_grid' style={{ width: "25%" }}>
-            Content
-          </Card.Grid>
-          <Card.Grid className='card_grid' style={{ width: "25%" }}>
-            Content
-          </Card.Grid>
-          <Card.Grid className='card_grid' style={{ width: "25%" }}>
-            Content
-          </Card.Grid>
-        </Card>
-        <Card className='card tripattes' title='Tripattes' bordered={true}>
-          <Card.Grid className='card_grid'>Content</Card.Grid>
-          <Card.Grid className='card_grid'>Content</Card.Grid>
-          <Card.Grid className='card_grid'>Content</Card.Grid>
-          <Card.Grid className='card_grid'>Content</Card.Grid>
-          <Card.Grid className='card_grid'>Content</Card.Grid>
-          <Card.Grid className='card_grid'>Content</Card.Grid>
-          <Card.Grid className='card_grid'>Content</Card.Grid>
-        </Card>
-      </Flex>
-      <Divider>Matériel spécifique aux unités</Divider>
-      <Flex horizontal wrap justify='start'>
+      <Divider><Typography.Title level={3}>Gros matériel commun</Typography.Title></Divider>
+      {/*<Flex horizontal wrap justify='start'>*/}
+      <Row gutter={8}>
+        <Col xs={24} sm={24} md={24} lg={16}>
+          <Card className='tentes' title='Tentes' bordered={true}>
+            <Card.Grid style={gridStyle}>Content</Card.Grid>
+            <Card.Grid style={gridStyle}>Content</Card.Grid>
+            <Card.Grid style={gridStyle}>Content</Card.Grid>
+            <Card.Grid style={gridStyle}>Content</Card.Grid>
+            <Card.Grid style={gridStyle}>Content</Card.Grid>
+            <Card.Grid style={gridStyle}>Content</Card.Grid>
+            <Card.Grid style={gridStyle}>Content</Card.Grid>
+          </Card>
+        </Col>
+        <Col xs={24} sm={24} md={24} lg={8}>
+          <Card className='tripattes' title='Tripattes' bordered={true}>
+            <Card.Grid style={gridStyle2}>Content</Card.Grid>
+            <Card.Grid style={gridStyle2}>Content</Card.Grid>
+            <Card.Grid style={gridStyle2}>Content</Card.Grid>
+            <Card.Grid style={gridStyle2}>Content</Card.Grid>
+            <Card.Grid style={gridStyle2}>Content</Card.Grid>
+            <Card.Grid style={gridStyle2}>Content</Card.Grid>
+            <Card.Grid style={gridStyle2}>Content</Card.Grid>
+          </Card>
+        </Col>
+      </Row>
+      {/*</Flex>*/}
+      <Divider><Typography.Title level={3}>Matériel spécifique aux unités</Typography.Title></Divider>
+      <Flex horizontal wrap justify='center' gap="32px">
         <Card className='card farfadets' title='Farfadets'></Card>
         <Card
           className='card louveteaux'

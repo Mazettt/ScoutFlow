@@ -1,17 +1,4 @@
-.card{
-    width: auto;
-    margin: 8px;
-    min-width: 100px;
-}
-.tentes{
-    max-width: 65%;
-}
-.tripattes{
-    max-width: 32%;
-}
-.card_grid{
-    margin: 0;
-    padding: 5px;
-    text-align: center;
-    min-width: 100px;
+.card {
+    width: 100%;
+    max-width: 400px;
 }

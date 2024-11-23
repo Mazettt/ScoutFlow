@@ -13,13 +13,15 @@ import {
   SettingOutlined,
   LogoutOutlined,
   CloudOutlined,
-  UnlockOutlined
+  UnlockOutlined,
+  MenuOutlined
 } from "@ant-design/icons";
-import { Button, Dropdown, Flex, Image, Layout, Menu, Spin, theme, Typography } from "antd";
+import { Button, Drawer, Dropdown, Flex, Image, Layout, Menu, Spin, theme, Typography } from "antd";
 import logo from "../Assets/sgdf_logo_white.png";
 import { useAPI } from "../Contexts/API";
 import { CurrentUserProvider, useCurrentUser } from "../Contexts/CurrentUser";
 import RoleAccess from "../Components/RoleAccess";
+import { BgVar } from "../App";
 
 export default function DashboardLayout() {
   const api = useAPI();
@@ -30,7 +32,6 @@ export default function DashboardLayout() {
     api
       .get("/auth/profile")
       .then((response) => {
-        console.log(response.data);
         setUser(response.data);
       })
       .catch(() => {
@@ -110,10 +111,15 @@ function VerifiedLayout() {
     {
       key: "access",
       icon: React.createElement(UnlockOutlined),
-      label:<Link to={"/dashboard/access"}>Access</Link>,
+      label: <Link to={"/dashboard/access"}>Access</Link>,
     },
   ];
-
+  const [openMenu, setOpenMenu] = useState(false);
+  function AppMenu() {
+    return (
+      <Menu theme='dark' mode='inline' defaultSelectedKeys={[currentMenuItem]} items={menuItems} />
+    );
+  }
   return (
     <Layout hasSider>
       <Layout.Sider
@@ -140,12 +146,15 @@ function VerifiedLayout() {
             </Typography.Title>
           )}
         </Flex>
-        <Menu
-          theme='dark'
-          mode='inline'
-          defaultSelectedKeys={[currentMenuItem]}
-          items={menuItems}
-        />
+        <AppMenu />
+        <Drawer
+          open={openMenu}
+          onClose={() => setOpenMenu(false)}
+          closable={false}
+          style={{ backgroundColor: BgVar }}
+        >
+          <AppMenu />
+        </Drawer>
       </Layout.Sider>
       <Layout style={{ marginInlineStart: collapsed ? 80 : 200 }}>
         <Layout.Header
