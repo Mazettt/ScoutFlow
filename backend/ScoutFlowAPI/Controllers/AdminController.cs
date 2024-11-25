@@ -47,8 +47,8 @@ namespace ScoutFlowAPI.Controllers
         {
             try
             {
-                await service.DeletePendingUser(uid);
                 await FirebaseAuth.DefaultInstance.RevokeRefreshTokensAsync(uid);
+                await service.DeletePendingUser(uid);
                 //TODO: send email to user
                 return Ok();
             }
