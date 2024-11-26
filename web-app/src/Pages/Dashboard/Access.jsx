@@ -8,7 +8,7 @@ import { LoadingOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 export default function Accueil() {
   const currentUser = useCurrentUser();
   const api = useAPI();
-  const [PendingUsers, setPendingUsers] = useState([]);
+  const [PendingUsers, setPendingUsers] = useState(null);
   const [openPopconfirmAccept, setOpenPopconfirmAccept] = useState(null);
   const [openPopconfirmReject, setOpenPopconfirmReject] = useState(null);
 
@@ -67,7 +67,7 @@ export default function Accueil() {
     text = `il y a ${numberOfUsers} utilisateurs à accepter`;
   }
 
-  if (!PendingUsers) {
+  if (PendingUsers === null) {
     return (
       <>
         <Flex align='center' justify='center'>
