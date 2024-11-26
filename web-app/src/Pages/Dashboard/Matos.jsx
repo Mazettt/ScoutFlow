@@ -92,7 +92,7 @@ export default function Matos() {
         </Col>
       </Row>
       {/*</Flex>*/}
-      <Divider><Typography.Title level={3}>Matériel spécifique aux unités</Typography.Title></Divider>
+      <Divider><Typography.Title level={3}>Petit matériel</Typography.Title></Divider>
       <Flex horizontal wrap justify='center' gap="32px">
         <Card className='card farfadets' title='Farfadets'></Card>
         <Card
